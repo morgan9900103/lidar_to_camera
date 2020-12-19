@@ -48,6 +48,13 @@ void projectLidarToCamera2()
     cv::Mat X(4,1,cv::DataType<double>::type);
     cv::Mat Y(3,1,cv::DataType<double>::type);
     for(auto it=lidarPoints.begin(); it!=lidarPoints.end(); ++it) {
+        // Filter lidar point which is not in front of the vehicle or above the ground
+        double maxX = 25.0;
+        double maxY = 6.0;
+        double minZ = -1.4;
+        if (it->x > maxX || it->x < 0.0 || abs(it->y) > maxY || it->z < minZ || it->r < 0.01)
+            continue;
+
         // 1. Convert current Lidar point into homogeneous coordinates and store it in the 4D variable X.
         X.at<double>(0, 0) = it->x;
         X.at<double>(1, 0) = it->y;
